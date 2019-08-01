@@ -1,0 +1,75 @@
+.dataPage{
+	max-width: 700px;
+	margin: 40px auto;
+	position: relative;
+}
+.friendsList{
+    margin: 0px 20px 40px;
+}
+.messageBox{
+	margin: 20px;
+    border: 1px solid #000;
+    height: 300px;
+    overflow-y: scroll;
+    position: relative;
+}
+.messageBox .msg{
+	padding: 10px 10px;
+	font-size: 16px;
+}
+.messageBox .right-msg{
+    display: flex;
+    justify-content: flex-end;
+	color: black;
+}
+.messageBox .left-msg{
+    display: flex;
+    justify-content: flex-start;
+	color: red;
+}
+.enterData{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    height: 40px;
+}
+.messageInput{
+    position: absolute;
+    bottom: -40px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0px 20px;
+}
+.messageInput input{
+    width: calc(100% - 120px);
+}
+.messageInput button{
+    height: 40px;
+    width: 120px;
+    float: left;
+    font-size: 14px;
+    padding: 0px;
+}
+
+@media(max-width: 767px) {
+    .friendsList {
+		margin: 0px;
+    }
+    .messageBox {
+        margin: 0px;
+        border: 1px solid #000;
+        height: 300px;
+        overflow-y: scroll;
+        position: relative;
+        margin-top: 40px;
+    }
+    .messageInput{
+        position: relative;
+        bottom: auto;
+        margin-bottom: 40px;
+        padding: 0px; 
+    }
+    .dataPage{
+        margin: 20px auto;
+    }
+}
