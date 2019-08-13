@@ -2,8 +2,9 @@ import React from 'react';
 import {connect} from 'react-redux';
 import '../ShowReletedData/ShowReletedData.css';
 import './ShowfriendsList.css';
-import { Router , Link, withRouter } from 'react-router-dom';
-import {UpdateAllData, loginData} from '../../reduce/Action/Action';
+import { Link, withRouter } from 'react-router-dom';
+import {updateMyData, loginData, getAllData} from '../../reduce/Action/Action';
+import axios from 'axios';
 
 class ShowfriendsList extends React.Component{
 	constructor(props){
@@ -41,47 +42,61 @@ class ShowfriendsList extends React.Component{
 	}
 	pushValue = () =>{
 		if(this.state.messageData != ''){
-			let tempArray = this.props.myDataValue;
+			let loggedUser = this.props.myDataValue;
 			let friendsArray = this.state.friendData;
 			let messageValue = this.state.messageData;
-			let wholeData = JSON.parse(localStorage.loginDetail);
-			let tempUpdatedData = []
-			tempArray.friends.map((e,l) =>{
-				if(e.name == friendsArray.name){
-					e.message.push({value:messageValue,sentId:tempArray.id})
-					tempUpdatedData = e;
+			let allData = this.props.data;
+			loggedUser.friends.map((e,l) =>{
+				if(e.fid == friendsArray.fid){
+					e.message.push({value:messageValue,sentId:loggedUser._id})
 				}
 			})
-			wholeData.forEach(function(eachFrd,index){
-				if(eachFrd.id == friendsArray.fid){
-					eachFrd.friends.forEach(function(e,i){
-						if(e.fid == tempArray.id){
-							e.message.push({value:messageValue,sentId:tempArray.id});
-						}
-					})
+			console.log(loggedUser)
+			let selectedUser = [];
+			allData.map((eachUser,index)=>{
+				if(friendsArray.fid == eachUser._id){
+					selectedUser = eachUser;
 				}
 			})
+			selectedUser.friends.map((e,l) =>{
+				if(e.fid == loggedUser._id){
+					e.message.push({value:messageValue,sentId:loggedUser._id})
+				}
+			})
+			console.log(selectedUser)
+			var self = this;
+	        axios({
+	            url: 'https://demomessanger-1032.restdb.io/rest/userdata/'+loggedUser["_id"],
+				method: 'PUT',
+				data: JSON.stringify(loggedUser),
+	            headers: {
+					'x-apikey' : process.env.REACT_APP_API_KEY,
+					'Content-Type' : 'application/json'
+	            }
+	        }).then(function (response) {
+				console.log(response.data);           
+	        }).catch(function(response){
+	            console.log(response.data);
+	        })
+	        axios({
+	            url: 'https://demomessanger-1032.restdb.io/rest/userdata/'+selectedUser["_id"],
+				method: 'PUT',
+				data: JSON.stringify(selectedUser),
+	            headers: {
+					'x-apikey' : process.env.REACT_APP_API_KEY,
+					'Content-Type' : 'application/json'
+	            }
+	        }).then(function (response) {				
+				this.props.dispatch(getAllData(loggedUser));
+				this.props.dispatch(updateMyData(loggedUser));
+	        }).catch(function(response){
+	            console.log(response.data);
+	        })
 			this.setState({
 				messageData: ''
 			})
-			wholeData.map((ele,index)=>{
-				if(ele.id == tempArray.id){
-					wholeData[index] = tempArray;
-				}
-			})
-			var userDataValue = []
-			wholeData.forEach(function(ele) {
-				if(ele.id == tempArray.id){
-
-				}else{
-					userDataValue.push(ele);
-				}
-			})
-			localStorage.loginDetail = JSON.stringify(wholeData);
-			this.props.dispatch(UpdateAllData(userDataValue));
-			this.props.dispatch(loginData(tempArray));
-		// var elem = document.getElementById('messageData');
-		// elem.scrollTop = elem.scrollHeight;
+			var elem = document.getElementById('messageData');
+			elem.scrollTop = elem.scrollHeight;
 		}
 	}
 	logout = () => {
@@ -124,8 +139,8 @@ class ShowfriendsList extends React.Component{
 								{
 									this.state.showMessage &&
 									this.state.friendData.message.map((e,i) =>{
-										return <div key={i} className="msg">{ e.sentId == this.props.myDataValue.id && <div className="right-msg">{e.value}</div>}
-												{ e.sentId != this.props.myDataValue.id && <div className="left-msg">{e.value}</div>}</div>
+										return <div key={i} className="msg">{ e.sentId == this.props.myDataValue._id && <div className="right-msg">{e.value}</div>}
+												{ e.sentId != this.props.myDataValue._id && <div className="left-msg">{e.value}</div>}</div>
 									})
 								}							
 							</div>

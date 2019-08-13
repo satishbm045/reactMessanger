@@ -1,8 +1,9 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import { Router , Link, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import './ShowReletedData.css'
-import {UpdateAllData, loginData} from '../../reduce/Action/Action'
+import {loginData, updateMyData} from '../../reduce/Action/Action'
+import axios from 'axios';
 
 class ShowReletedData extends React.Component{
 	constructor(props){
@@ -12,8 +13,9 @@ class ShowReletedData extends React.Component{
 		}
 	}
 	componentDidMount(){
-		if(this.props.myDataValue.name == undefined)
+		if(this.props.myDataValue.name == undefined){
 			this.props.history.push('/');
+		}
 		let myData = this.props.myDataValue
 		let wholeData = this.props.data
 		let addFriendArray = []
@@ -39,23 +41,37 @@ class ShowReletedData extends React.Component{
 	}
  	addFriendList = (userData) =>{
 		let myData = this.props.myDataValue;
-		let wholeData = JSON.parse(localStorage.loginDetail);
-		let AddfriendListData = this.props.data;
-		myData.friends.push({fid:userData.id,name:userData.name,message:[]});
-		wholeData.forEach(function(value,index){
-			if(value.id == userData.id){
-				value.friends.push({fid:myData.id,name:myData.name,message:[]});
-			}
-		})
-		AddfriendListData.forEach(function(user,index){
-			if(user.id == userData.id){
-				user.friends.push({fid:myData.id,name:myData.name,message:[]});
-			}
-		})
-		localStorage.loginDetail = JSON.stringify(wholeData);
-		this.props.dispatch(UpdateAllData(AddfriendListData));
-		this.props.dispatch(loginData(myData));
-		this.props.history.push('/data');
+		myData.friends.push({fid:userData._id,name:userData.name,message:[]});
+		userData.friends.push({fid:myData._id,name:myData.name,message:[]});
+		var self = this;
+		axios({
+            url: 'https://demomessanger-1032.restdb.io/rest/userdata/'+userData["_id"],
+			method: 'PUT',
+			data: JSON.stringify(userData),
+            headers: {
+				'x-apikey' : process.env.REACT_APP_API_KEY,
+				'Content-Type' : 'application/json'
+            }
+        }).then(function (response) {
+			// console.log(response.data);         
+        }).catch(function(response){
+            console.log(response.data);
+        })
+        axios({
+            url: 'https://demomessanger-1032.restdb.io/rest/userdata/'+myData["_id"],
+			method: 'PUT',
+			data: JSON.stringify(myData),
+            headers: {
+				'x-apikey' : process.env.REACT_APP_API_KEY,
+				'Content-Type' : 'application/json'
+            }
+        }).then(function (response) {
+			// console.log(response.data);
+			self.props.dispatch(updateMyData(myData));
+			self.props.history.push('/data');            
+        }).catch(function(response){
+            console.log(response.data);
+        })	
 	}
 	logout = () => {
 		let tempArr = []

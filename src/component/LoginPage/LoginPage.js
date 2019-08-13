@@ -1,10 +1,10 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Link, withRouter} from 'react-router-dom';
-import {UpdateAllData, loginData} from '../../reduce/Action/Action'
+import {getAllData, loginData} from '../../reduce/Action/Action'
 import mainLogo from '../../img/app-logo.jpg';
+import {GetData} from '../../reduce/Action/Action';
 import './LoginPage.css'
-
 import '../ShowReletedData/ShowReletedData.css'
 
 class EachDataShow extends React.Component{
@@ -15,7 +15,8 @@ class EachDataShow extends React.Component{
 			passWord: ''
 		}
 	}
-	componentDidMount(){
+	componentDidMount(){        
+    	this.props.dispatch(GetData());
 		if(this.props.myDataValue.name != undefined)
 			this.props.history.push('/data');
 	}
@@ -30,15 +31,13 @@ class EachDataShow extends React.Component{
 		})
 	}
 	submitBtn = () =>{
+		var self = this;
 		var flagshow = 0;
 		var dumyUsername = this.state.userName;
 		var dumyPassword = this.state.passWord;
-		let userData = JSON.parse(localStorage.loginDetail);
 		let ourData = [];
-		console.log(userData);
-		userData.forEach(function(e){
-			if(e.user.toLowerCase() == dumyUsername.toLowerCase() && e.password.toLowerCase() == dumyPassword.toLowerCase()){
-				// alert('hey u did');
+		self.props.allData.forEach(function(e){
+			if(e.userName.toLowerCase() == dumyUsername.toLowerCase() && e.passWord.toLowerCase() == dumyPassword.toLowerCase()){
 				ourData = e;			
 				flagshow = 1;
 			}
@@ -46,20 +45,12 @@ class EachDataShow extends React.Component{
 		if(flagshow == 0){
 			alert("Please Enter Valid UserName/Password");
 		}else{
-			this.fnToUpdateDispatch(userData,ourData)
+			self.fnToUpdateDispatch(ourData)
 		}
 	}
-	fnToUpdateDispatch = (para1, para2) =>{
-		var userDataValue = []
-		para1.forEach(function(ele) {
-			if(ele.name == para2.name){
-
-			}else{
-				userDataValue.push(ele);
-			}
-		})
-		this.props.dispatch(UpdateAllData(userDataValue));
-		this.props.dispatch(loginData(para2));
+	fnToUpdateDispatch = (loggedData) =>{
+		this.props.dispatch(getAllData(loggedData));
+		this.props.dispatch(loginData(loggedData));
 		this.state.userName = '';
 		this.state.passWord = '';
 		this.props.history.push('/data');
@@ -83,5 +74,10 @@ class EachDataShow extends React.Component{
 	}
 }
 
-
-export default connect()(withRouter(EachDataShow));
+const mapStoreToProps = (store) => {
+	console.log(store.allUserDataReducer.data);
+	return {
+	  	allData : store.allUserDataReducer.data
+	}
+}
+export default connect(mapStoreToProps)(withRouter(EachDataShow));
