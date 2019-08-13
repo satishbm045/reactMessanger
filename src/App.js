@@ -7,15 +7,10 @@ import SignUp from './component/SignUp/SignUp';
 import {BrowserRouter, Route, Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import axios from 'axios';
-// import {GetUserData, UpdateLikeArray, UpdateDislikeArray} from './reduce/Action/Action'
 
 class App extends React.Component {
   constructor(props){
     super(props);
-    this.state = {
-      name: {},
-      userData: []
-    }
   }
   render(){
     return (
