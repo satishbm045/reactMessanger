@@ -121,10 +121,15 @@ class ShowfriendsList extends React.Component{
 					</div>
 				}
 				<div className="friendsList">
-					{	this.props.myDataValue.name != undefined && this.state.showFriendsList &&
+					{	this.props.myDataValue.name != undefined && this.state.showFriendsList && this.props.myDataValue.friends.length > 0 &&
 						this.props.myDataValue.friends.map((e,i) =>{
 							return <div className="AddList" key={i} onClick={() => this.friendAdd(e)}>{e.name}</div>
 						})
+					}
+				</div>
+				<div className="friendsList">
+					{	this.props.myDataValue.friends.length == 0 &&
+							<div className="errorMsg">You do not have any friends. <br/> Please search for new friends</div>
 					}
 				</div>
 					{

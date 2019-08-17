@@ -3,7 +3,9 @@ import {connect} from 'react-redux';
 import {Link, withRouter} from 'react-router-dom';
 import {getAllData, loginData} from '../../reduce/Action/Action'
 import mainLogo from '../../img/app-logo.jpg';
+import loadingLogo from '../../img/loading.svg';
 import {GetData} from '../../reduce/Action/Action';
+import axios from 'axios';
 import './LoginPage.css'
 import '../ShowReletedData/ShowReletedData.css'
 
@@ -12,11 +14,12 @@ class EachDataShow extends React.Component{
 		super(props);
 		this.state = {
 			userName: '',
-			passWord: ''
+			passWord: '',
+			loading: false
 		}
 	}
 	componentDidMount(){        
-    	this.props.dispatch(GetData());
+    	// this.props.dispatch(GetData());
 		if(this.props.myDataValue.name != undefined)
 			this.props.history.push('/data');
 	}
@@ -35,20 +38,51 @@ class EachDataShow extends React.Component{
 		var flagshow = 0;
 		var dumyUsername = this.state.userName;
 		var dumyPassword = this.state.passWord;
-		let ourData = [];
-		self.props.allData.forEach(function(e){
-			if(e.userName.toLowerCase() == dumyUsername.toLowerCase() && e.passWord.toLowerCase() == dumyPassword.toLowerCase()){
-				ourData = e;			
-				flagshow = 1;
-			}
+		self.setState({
+			loading: true
 		})
-		if(flagshow == 0){
-			alert("Please Enter Valid UserName/Password");
-		}else{
-			self.fnToUpdateDispatch(ourData)
-		}
+		axios({
+            url: 'https://demomessanger-1032.restdb.io/rest/userdata?q={"userName":"'+this.state.userName+'","passWord":"'+this.state.passWord+'"}',
+            method: 'GET',
+            headers: {
+                'x-apikey' : process.env.REACT_APP_API_KEY,
+                'Content-Type' : 'application/json'
+            }
+        }).then((response) => {
+			if(response.data.length > 0){
+				self.fnToUpdateDispatch(response.data[0]);
+			}else{
+				self.setState({
+					loading: false
+				})
+				alert("Please Enter Valid UserName/Password");
+			}
+            console.log(response);
+        })
+        .catch((err) => {
+			self.setState({
+				loading: false
+			})
+			console.log(err);
+			alert("Something went wrong");
+        })
+		// let ourData = [];
+		// self.props.allData.forEach(function(e){
+		// 	if(e.userName.toLowerCase() == dumyUsername.toLowerCase() && e.passWord.toLowerCase() == dumyPassword.toLowerCase()){
+		// 		ourData = e;			
+		// 		flagshow = 1;
+		// 	}
+		// })
+		// if(flagshow == 0){
+		// 	alert("Please Enter Valid UserName/Password");
+		// }else{
+		// 	self.fnToUpdateDispatch(ourData);
+		// }
 	}
 	fnToUpdateDispatch = (loggedData) =>{
+		this.setState({
+			loading: false
+		})
 		this.props.dispatch(getAllData(loggedData));
 		this.props.dispatch(loginData(loggedData));
 		this.state.userName = '';
@@ -58,6 +92,8 @@ class EachDataShow extends React.Component{
 	render(){
 	    return (
 	    	<div className="LoginPage">
+				{ this.state.loading &&
+				<div style={{position:'absolute'}}><img style={{width:'100%', height:'100%'}} src={loadingLogo} alt="header logo"/></div> }
 				<div className="loginContent">
 					<div style={{width:'200px',margin:'0 auto'}}>
 						<img style={{width:'100%', height:'100%'}} src={mainLogo} alt="header logo"/>

@@ -3,13 +3,15 @@ import {connect} from 'react-redux';
 import { withRouter } from 'react-router-dom'
 import './ShowReletedData.css'
 import {loginData, updateMyData} from '../../reduce/Action/Action'
+import loadingLogo from '../../img/loading.svg';
 import axios from 'axios';
 
 class ShowReletedData extends React.Component{
 	constructor(props){
 		super(props);
 		this.state = {
-			addFriendsList:[]
+			addFriendsList:[],
+			loading: false
 		}
 	}
 	componentDidMount(){
@@ -36,14 +38,16 @@ class ShowReletedData extends React.Component{
 	fnToUpdate = (addFriendArray) =>{
 		this.setState({
 			addFriendsList : addFriendArray
-		})		
-		
+		})
 	}
  	addFriendList = (userData) =>{
+		var self = this;
 		let myData = this.props.myDataValue;
+		self.setState({
+			loading: true
+		})
 		myData.friends.push({fid:userData._id,name:userData.name,message:[]});
 		userData.friends.push({fid:myData._id,name:myData.name,message:[]});
-		var self = this;
 		axios({
             url: 'https://demomessanger-1032.restdb.io/rest/userdata/'+userData["_id"],
 			method: 'PUT',
@@ -53,7 +57,7 @@ class ShowReletedData extends React.Component{
 				'Content-Type' : 'application/json'
             }
         }).then(function (response) {
-			// console.log(response.data);         
+			// console.log(response.data);
         }).catch(function(response){
             console.log(response.data);
         })
@@ -66,7 +70,9 @@ class ShowReletedData extends React.Component{
 				'Content-Type' : 'application/json'
             }
         }).then(function (response) {
-			// console.log(response.data);
+			self.setState({
+				loading: false
+			})
 			self.props.dispatch(updateMyData(myData));
 			self.props.history.push('/data');            
         }).catch(function(response){
@@ -81,6 +87,9 @@ class ShowReletedData extends React.Component{
 	render(){
 		return(
 				<div className="addFriendPage">
+					{ this.state.loading &&
+						<div className="loadingIcon" ><img  src={loadingLogo} alt="header logo"/></div> 
+					}
 					<div>
 						New Friends
 					</div>

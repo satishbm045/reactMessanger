@@ -69,7 +69,11 @@
 	border: 1px solid red;
 	color: red;
 }
-
+.loadingIcon{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
 @media(max-width: 767px) {
 	.btn.logOutBtn {
 		position: relative;
