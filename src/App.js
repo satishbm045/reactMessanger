@@ -26,8 +26,8 @@ class App extends React.Component {
   }
 }
 const mapStoreToProps = (store) => {
-  console.log(store.userDataReducer);
-  console.log(store.ourDataReducer);
+  // console.log(store.userDataReducer);
+  // console.log(store.ourDataReducer);
   return {
     allData : store.userDataReducer,
     myData: store.ourDataReducer

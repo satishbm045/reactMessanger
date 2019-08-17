@@ -45,7 +45,7 @@ class SignUp extends React.Component{
 			self.setState({
 				loading: false
 			})
-			console.log(response.data);
+			// console.log(response.data);
 			self.props.history.push('/');
         }).catch(function(response){
 			self.setState({

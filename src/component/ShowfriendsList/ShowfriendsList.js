@@ -21,7 +21,6 @@ class ShowfriendsList extends React.Component{
 			this.props.history.push('/');
 	}
 	friendAdd = (value) =>{
-		console.log(value);
 		this.setState({
 			showFriendsList: false,
 			showMessage: true,
@@ -51,7 +50,6 @@ class ShowfriendsList extends React.Component{
 					e.message.push({value:messageValue,sentId:loggedUser._id})
 				}
 			})
-			console.log(loggedUser)
 			let selectedUser = [];
 			allData.map((eachUser,index)=>{
 				if(friendsArray.fid == eachUser._id){
@@ -63,7 +61,6 @@ class ShowfriendsList extends React.Component{
 					e.message.push({value:messageValue,sentId:loggedUser._id})
 				}
 			})
-			console.log(selectedUser)
 			var self = this;
 	        axios({
 	            url: 'https://demomessanger-1032.restdb.io/rest/userdata/'+loggedUser["_id"],
@@ -74,7 +71,7 @@ class ShowfriendsList extends React.Component{
 					'Content-Type' : 'application/json'
 	            }
 	        }).then(function (response) {
-				console.log(response.data);           
+				// console.log(response.data);          
 	        }).catch(function(response){
 	            console.log(response.data);
 	        })
