@@ -42,7 +42,7 @@ class EachDataShow extends React.Component{
 			loading: true
 		})
 		axios({
-            url: 'https://demomessanger-1032.restdb.io/rest/userdata?q={"userName":"'+this.state.userName+'","passWord":"'+this.state.passWord+'"}',
+            url: 'https://demomessanger-1032.restdb.io/rest/userdata?q={"userName":"'+this.state.userName.toLowerCase()+'","passWord":"'+this.state.passWord.toLowerCase()+'"}',
             method: 'GET',
             headers: {
                 'x-apikey' : process.env.REACT_APP_API_KEY,

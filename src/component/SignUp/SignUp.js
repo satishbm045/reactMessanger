@@ -32,7 +32,7 @@ class SignUp extends React.Component{
 		self.setState({
 			loading: true
 		})
-		let userData = [{"id":Math.floor(Math.random() * 20000),"name":this.state.name,"userName":this.state.userName,"passWord":this.state.password,friends:[]}];
+		let userData = [{"id":Math.floor(Math.random() * 20000),"name":this.state.name,"userName":this.state.userName.toLowerCase(),"passWord":this.state.password.toLowerCase(),friends:[]}];
         axios({
             url: 'https://demomessanger-1032.restdb.io/rest/userdata',
 			method: 'POST',
