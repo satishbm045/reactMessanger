@@ -21,8 +21,6 @@ class ShowfriendsList extends React.Component{
 			this.props.history.push('/');
 	}
 	friendAdd = (value) =>{
-		this.props.dispatch(getAllData(this.props.myDataValue));
-		this.props.dispatch(updateMyData(this.props.myDataValue));
 		this.setState({
 			showFriendsList: false,
 			showMessage: true,
@@ -36,8 +34,8 @@ class ShowfriendsList extends React.Component{
 		// console.log(event.target.value);
 	}
 	showFriendsListValue = () =>{
-		this.props.dispatch(getAllData(this.props.myDataValue));
-		this.props.dispatch(updateMyData(this.props.myDataValue));
+		this.props.dispatch(getAllData(loggedUser));
+		this.props.dispatch(updateMyData(loggedUser));
 		this.setState({
 			showFriendsList: true,
 			showMessage: false
