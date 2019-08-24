@@ -34,8 +34,6 @@ class ShowfriendsList extends React.Component{
 		// console.log(event.target.value);
 	}
 	showFriendsListValue = () =>{
-		this.props.dispatch(getAllData(loggedUser));
-		this.props.dispatch(updateMyData(loggedUser));
 		this.setState({
 			showFriendsList: true,
 			showMessage: false
